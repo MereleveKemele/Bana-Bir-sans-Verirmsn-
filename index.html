@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Bana Bir Şans</title>
+
+  <style>
+    body {
+      margin: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #ffe6ea;
+      font-family: Arial, Helvetica, sans-serif;
+      overflow: hidden;
+    }
+
+    .screen {
+      display: none;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      text-align: center;
+    }
+
+    .active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      z-index: 2;
+    }
+
+    .photo {
+      width: 200px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      z-index: 2;
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 20px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      position: absolute;
+      transition: top 0.15s ease, left 0.15s ease;
+      z-index: 2;
+    }
+
+    #yesBtn {
+      background: #4CAF50;
+      color: white;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #noBtn {
+      background: #f44336;
+      color: white;
+      top: 40%;
+      left: 20%;
+    }
+
+    /* Kalpler */
+    .heart {
+      position: absolute;
+      font-size: 20px;
+      animation: floatUp 5s linear forwards;
+      opacity: 0.8;
+    }
+
+    @keyframes floatUp {
+      from {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-800px) scale(1.5);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- EKRAN 1 -->
+  <div id="screen1" class="screen active">
+    <img src="foto.jpg" alt="Fotoğraf" class="photo">
+    <h1>Bana bir şans verir misin Merele? 💖</h1>
+
+    <button id="yesBtn">Evet</button>
+    <button id="noBtn">Hayır</button>
+  </div>
+
+  <!-- EKRAN 2 -->
+  <div id="screen2" class="screen">
+    <h1>Bu şansı boşa kullanmayacağım, söz veriyorum 🤍</h1>
+  </div>
+
+  <!-- MÜZİK -->
+  <audio id="bgMusic" loop>
+    <source src="muzik.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const screen1 = document.getElementById("screen1");
+    const screen2 = document.getElementById("screen2");
+    const bgMusic = document.getElementById("bgMusic");
+
+    let yesSize = 20;
+    let musicStarted = false;
+
+    function moveNoButton() {
+      const maxX = window.innerWidth - noBtn.offsetWidth;
+      const maxY = window.innerHeight - noBtn.offsetHeight;
+
+      noBtn.style.left = Math.random() * maxX + "px";
+      noBtn.style.top = Math.random() * maxY + "px";
+
+      yesSize += 6;
+      yesBtn.style.fontSize = yesSize + "px";
+      yesBtn.style.padding = (yesSize / 2) + "px";
+    }
+
+    function updateMusicVolume() {
+      if (!musicStarted) return;
+
+      const noRect = noBtn.getBoundingClientRect();
+      const yesRect = yesBtn.getBoundingClientRect();
+
+      const dx = (noRect.left + noRect.width / 2) - (yesRect.left + yesRect.width / 2);
+      const dy = (noRect.top + noRect.height / 2) - (yesRect.top + yesRect.height / 2);
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      const maxDistance = Math.sqrt(window.innerWidth ** 2 + window.innerHeight ** 2);
+      let volume = 1 - (distance / maxDistance);
+
+      volume = Math.min(Math.max(volume, 0.05), 1);
+      bgMusic.volume = volume;
+    }
+
+    noBtn.addEventListener("mouseenter", () => {
+      if (!musicStarted) {
+        bgMusic.volume = 0.1;
+        bgMusic.play();
+        musicStarted = true;
+      }
+      moveNoButton();
+    });
+
+    noBtn.addEventListener("touchstart", moveNoButton);
+
+    document.addEventListener("mousemove", updateMusicVolume);
+
+    yesBtn.addEventListener("click", () => {
+      bgMusic.volume = 0.5;
+
+      screen1.classList.remove("active");
+      screen2.classList.add("active");
+      startHearts();
+    });
+
+    function startHearts() {
+      setInterval(() => {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerHTML = "💖";
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        heart.style.bottom = "-20px";
+        heart.style.fontSize = (Math.random() * 20 + 15) + "px";
+        document.body.appendChild(heart);
+
+        setTimeout(() => heart.remove(), 5000);
+      }, 250);
+    }
+  </script>
+
+</body>
+</html>
