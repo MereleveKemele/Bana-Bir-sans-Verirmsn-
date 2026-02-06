@@ -60,8 +60,8 @@
       border-radius: 12px;
       cursor: pointer;
       position: relative;
-      transition: top 0.15s ease, left 0.15s ease;
       z-index: 2;
+      transition: font-size 0.1s, padding 0.1s;
     }
 
     #yesBtn {
@@ -72,18 +72,7 @@
     #noBtn {
       background: #f44336;
       color: white;
-    }
-
-    .heart {
-      position: absolute;
-      font-size: 20px;
-      animation: floatUp 5s linear forwards;
-      opacity: 0.8;
-    }
-
-    @keyframes floatUp {
-      from { transform: translateY(0) scale(1); opacity: 1; }
-      to { transform: translateY(-800px) scale(1.5); opacity: 0; }
+      position: absolute; /* Başlangıç absolute */
     }
 
     #startOverlay {
@@ -134,11 +123,6 @@
     <source src="muzik.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- Boing Sesi -->
-  <audio id="boingSound">
-    <source src="boing.mp3" type="audio/mpeg">
-  </audio>
-
   <script>
     const overlay = document.getElementById("startOverlay");
     const yesBtn = document.getElementById("yesBtn");
@@ -147,12 +131,11 @@
     const screen2 = document.getElementById("screen2");
     const photo = document.querySelector(".photo");
     const bgMusic = document.getElementById("bgMusic");
-    const boingSound = document.getElementById("boingSound");
 
     let yesSize = 20;
     let musicStarted = false;
 
-    // Başlangıç overlay: hem click hem touchstart
+    // Başlangıç overlay
     function startOverlay() {
       if (!musicStarted) {
         bgMusic.volume = 0.3; // Sabit ses
@@ -165,41 +148,34 @@
     overlay.addEventListener("click", startOverlay);
     overlay.addEventListener("touchstart", startOverlay, {passive:false});
 
-    // Hayır butonu zıplama (kaybolmaz!)
-    function moveNoButton() {
-      noBtn.style.position = "absolute";
-
+    // Hayır butonuna yaklaşınca kaçma
+    function escapeNoBtn(e) {
       const minY = photo.offsetTop + photo.offsetHeight + 20;
       const maxY = window.innerHeight - noBtn.offsetHeight - 20;
       const minX = 20;
       const maxX = window.innerWidth - noBtn.offsetWidth - 20;
 
-      const newX = Math.random() * (maxX - minX) + minX;
-      const newY = Math.random() * (maxY - minY) + minY;
+      // Rastgele pozisyon, çok uzaklaşmadan
+      const offset = 150; // maksimum kaçma mesafesi
+      const newX = Math.min(maxX, Math.max(minX, Math.random() * offset + e.clientX - offset/2));
+      const newY = Math.min(maxY, Math.max(minY, Math.random() * offset + e.clientY - offset/2));
+
       noBtn.style.left = newX + "px";
       noBtn.style.top = newY + "px";
 
-      // Küçük zıplama animasyonu
-      noBtn.animate([
-        { transform: 'translateY(0px)' },
-        { transform: 'translateY(-20px)' },
-        { transform: 'translateY(0px)' }
-      ], { duration: 200, easing: 'ease-out' });
-
       // Evet büyü
-      yesSize += 6;
+      yesSize += 2;
       yesBtn.style.fontSize = yesSize + "px";
       yesBtn.style.padding = (yesSize / 2) + "px";
-
-      // Boing sesi
-      boingSound.currentTime = 0;
-      boingSound.play().catch(err => console.log(err));
     }
 
-    // Hayır butonu eventleri
-    noBtn.addEventListener("mouseenter", moveNoButton);
-    noBtn.addEventListener("click", e => { e.preventDefault(); moveNoButton(); });
-    noBtn.addEventListener("touchstart", e => { e.preventDefault(); moveNoButton(); }, {passive:false});
+    // Eventler
+    noBtn.addEventListener("mouseenter", escapeNoBtn);
+    noBtn.addEventListener("touchstart", e => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      escapeNoBtn({ clientX: touch.clientX, clientY: touch.clientY });
+    }, {passive:false});
 
     // Evet butonu
     yesBtn.addEventListener("click", () => {
@@ -207,40 +183,7 @@
 
       screen1.classList.remove("active");
       screen2.classList.add("active");
-      startHearts();
-
-      if (navigator.vibrate) navigator.vibrate([100,50,100]);
     });
-
-    // Kalpler
-    function startHearts() {
-      setInterval(() => {
-        const heart = document.createElement("div");
-        heart.className = "heart";
-        heart.innerHTML = "💖";
-        heart.style.left = Math.random() * window.innerWidth + "px";
-        heart.style.bottom = "-20px";
-        heart.style.fontSize = (Math.random() * 20 + 15) + "px";
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 5000);
-      }, 250);
-    }
-
-    // Mobilde butona basınca müzik başlat
-    noBtn.addEventListener("touchstart", () => {
-      if (!musicStarted) {
-        bgMusic.volume = 0.3;
-        bgMusic.play().catch(err => console.log(err));
-        musicStarted = true;
-      }
-    }, {passive:false});
-    yesBtn.addEventListener("touchstart", () => {
-      if (!musicStarted) {
-        bgMusic.volume = 0.3;
-        bgMusic.play().catch(err => console.log(err));
-        musicStarted = true;
-      }
-    }, {passive:false});
   </script>
 
 </body>
