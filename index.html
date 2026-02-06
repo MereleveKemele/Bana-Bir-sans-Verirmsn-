@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bana Bir Şans Verir misin?</title>
+
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg,#ff9ecb,#ffd6e7);
+        font-family: Arial, Helvetica, sans-serif;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 40px;
+        color: white;
+        margin-bottom: 40px;
+    }
+
+    .buttons {
+        position: relative;
+        height: 200px;
+    }
+
+    button {
+        padding: 15px 30px;
+        font-size: 20px;
+        border-radius: 15px;
+        border: none;
+        cursor: pointer;
+        position: absolute;
+        transition: 0.25s;
+    }
+
+    #yesBtn {
+        background: #4CAF50;
+        color: white;
+        left: 40%;
+    }
+
+    #noBtn {
+        background: #ff4d4d;
+        color: white;
+        left: 60%;
+    }
+
+    /* 2. ekran */
+    #secondScreen {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* kalpler */
+    .heart {
+        position: absolute;
+        font-size: 18px;
+        animation: float 6s linear infinite;
+        color: white;
+    }
+
+    @keyframes float {
+        from {
+            transform: translateY(100vh);
+            opacity: 1;
+        }
+        to {
+            transform: translateY(-10vh);
+            opacity: 0;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div id="firstScreen">
+    <h1>Bana bir şans verir misin Merele 💖</h1>
+
+    <div class="buttons">
+        <button id="yesBtn">Evet</button>
+        <button id="noBtn">Hayır</button>
+    </div>
+</div>
+
+<div id="secondScreen">
+    <h1>Bu şansı boşa kullanmıcam söz veriyorum askummm 💕</h1>
+</div>
+
+<script>
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const firstScreen = document.getElementById("firstScreen");
+const secondScreen = document.getElementById("secondScreen");
+
+let yesScale = 1;
+
+// Hayır kaçsın + evet büyüsün
+noBtn.addEventListener("mouseover", () => {
+
+    const maxX = window.innerWidth - 100;
+    const maxY = window.innerHeight - 100;
+
+    const randX = Math.random() * maxX;
+    const randY = Math.random() * maxY;
+
+    noBtn.style.left = randX + "px";
+    noBtn.style.top = randY + "px";
+
+    yesScale += 0.2;
+    yesBtn.style.transform = `scale(${yesScale})`;
+});
+
+// Evet tıklanınca 2. ekran
+yesBtn.addEventListener("click", () => {
+    firstScreen.style.display = "none";
+    secondScreen.style.display = "flex";
+
+    startHearts();
+});
+
+// Kalpler ve küçük yazılar
+function startHearts() {
+    setInterval(() => {
+        const el = document.createElement("div");
+
+        el.className = "heart";
+
+        if (Math.random() > 0.5) {
+            el.innerText = "💗";
+        } else {
+            el.innerText = "küçükaskum";
+            el.style.fontSize = "12px";
+        }
+
+        el.style.left = Math.random() * 100 + "vw";
+        el.style.animationDuration = (4 + Math.random()*4) + "s";
+
+        document.body.appendChild(el);
+
+        setTimeout(() => el.remove(), 8000);
+    }, 300);
+}
+</script>
+
+</body>
+</html>
