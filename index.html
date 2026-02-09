@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Merele 💖</title>
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-95TWWVWFHT"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-95TWWVWFHT');
+</script>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Segoe UI',sans-serif;
+}
+
+body{
+  height:100vh;
+  background:linear-gradient(135deg,#ff8fb1,#ffc6d9,#ffe6f0);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  text-align:center;
+}
+
+/* ekran */
+.screen{
+  position:absolute;
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:25px;
+  padding:20px;
+}
+
+.hidden{display:none;}
+
+img{
+  width:240px;
+  max-width:75%;
+  border-radius:30px;
+  box-shadow:0 20px 40px rgba(0,0,0,.25);
+}
+
+/* başlık */
+h1{
+  font-size:2rem;
+  color:white;
+  text-shadow:0 5px 12px rgba(0,0,0,.35);
+}
+
+/* buton */
+.buttons{
+  display:flex;
+  gap:20px;
+}
+
+button{
+  padding:14px 30px;
+  border:none;
+  border-radius:20px;
+  font-size:18px;
+  cursor:pointer;
+  transition:.25s;
+}
+
+#yes{background:#ff4081;color:white;}
+#no{background:#555;color:white;}
+
+button:hover{transform:scale(1.1);}
+
+/* final */
+.final-text{
+  font-size:2.2rem;
+  color:white;
+  font-weight:bold;
+}
+
+/* ❤️ PATLAYAN KALPLER */
+.heart{
+  position:absolute;
+  font-size:22px;
+  animation:pop 1.8s ease-out forwards;
+  pointer-events:none;
+}
+
+@keyframes pop{
+  0%{transform:scale(0);opacity:1;}
+  40%{transform:scale(1.6);}
+  100%{transform:translateY(-120px) scale(0.4);opacity:0;}
+}
+
+/* 💖 kalp sayaç kutusu */
+#sayacBox{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#ff4081;
+  color:white;
+  padding:18px 30px;
+  border-radius:60px;
+  font-size:14px;
+  font-weight:bold;
+  box-shadow:0 8px 25px rgba(0,0,0,.3);
+}
+
+/* kalp çıkıntı efekti */
+#sayacBox::before,
+#sayacBox::after{
+  content:"";
+  position:absolute;
+  width:40px;
+  height:40px;
+  background:#ff4081;
+  border-radius:50%;
+  top:-15px;
+}
+
+#sayacBox::before{left:25px;}
+#sayacBox::after{right:25px;}
+
+@media(max-width:600px){
+  h1{font-size:1.6rem;}
+}
+</style>
+</head>
+
+<body>
+
+<audio id="music" src="muzik.mp3" autoplay loop></audio>
+
+<!-- İLK EKRAN -->
+<div class="screen" id="screen1">
+
+  <img src="foto.jpg">
+
+  <h1>Bana bir şans verir misin? <br> Merele 💕</h1>
+
+  <div class="buttons">
+    <button id="yes">Evet</button>
+    <button id="no">Hayır</button>
+  </div>
+
+</div>
+
+<!-- FİNAL -->
+<div class="screen hidden" id="screen2">
+  <div class="final-text">
+    Bu şansı boşa kullanmıcam <br>
+    söz veriyorum askummm 💖
+  </div>
+</div>
+
+<!-- ❤️ SAYAÇ -->
+<div id="sayacBox">
+  💞 Sana bu kadar süredir aşığım merele:
+  <br>
+  <span id="sayac"></span>
+</div>
+
+<script>
+const yesBtn=document.getElementById("yes");
+const noBtn=document.getElementById("no");
+const screen1=document.getElementById("screen1");
+const screen2=document.getElementById("screen2");
+const music=document.getElementById("music");
+
+music.volume=0.2;
+
+gtag('event','site_acildi');
+
+/* mobil müzik */
+document.body.addEventListener("click",()=>music.play(),{once:true});
+
+/* evet büyütme */
+let size=1;
+
+noBtn.onclick=()=>{
+  gtag('event','hayir_tiklandi');
+  size+=0.35;
+  yesBtn.style.transform=`scale(${size})`;
+  if(size>3) noBtn.style.display="none";
+};
+
+/* evet */
+yesBtn.onclick=()=>{
+  gtag('event','evet_tiklandi');
+  screen1.classList.add("hidden");
+  screen2.classList.remove("hidden");
+};
+
+/* ❤️ PATLAYAN KALPLER */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+
+  const arr=["💖","💘","💝","💗","💞","küçükaskum"];
+  h.innerHTML=arr[Math.floor(Math.random()*arr.length)];
+
+  h.style.left=Math.random()*100+"vw";
+  h.style.top=Math.random()*100+"vh";
+
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),1800);
+},180);
+
+
+/* ⏳ SAYAÇ */
+const baslangic=new Date("2022-12-23T00:00:00");
+
+function sayac(){
+  const fark=new Date()-baslangic;
+
+  const gun=Math.floor(fark/86400000);
+  const saat=Math.floor(fark/3600000)%24;
+  const dk=Math.floor(fark/60000)%60;
+  const sn=Math.floor(fark/1000)%60;
+
+  document.getElementById("sayac").innerText=
+  `${gun} gün ${saat} saat ${dk} dk ${sn} sn`;
+}
+
+setInterval(sayac,1000);
+sayac();
+</script>
+
+</body>
+</html>
