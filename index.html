@@ -20,6 +20,19 @@ gtag('config', 'G-95TWWVWFHT');
   padding:0;
   box-sizing:border-box;
   font-family:'Segoe UI',sans-serif;
+  #sideVideo{
+  position:fixed;
+  right:15px;
+  bottom:120px;
+  width:140px;
+  height:140px;
+  border-radius:20px;
+  object-fit:cover;
+  box-shadow:0 8px 25px rgba(0,0,0,.4);
+  opacity:.9;
+  z-index:5;
+}
+
 }
 
 body{
@@ -30,6 +43,10 @@ body{
   justify-content:center;
   overflow:hidden;
   text-align:center;
+  <video id="sideVideo" autoplay muted loop playsinline>
+  <source src="video.mp4" type="video/mp4">
+</video>
+
 }
 
 /* ekran */
@@ -238,7 +255,3 @@ sayac();
 </script>
 
 </body>
-</html>
-<video id="sideVideo" autoplay muted loop playsinline>
-  <source src="video.mp4" type="video/mp4">
-</video>
